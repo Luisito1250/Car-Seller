@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Consultar Transacción</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">Gestión de transacciones</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="ver_transaccion.html">Ver Transacciones</a></li>
+            <li class="nav-item"><a class="nav-link" href="insertar_transaccion.html">Insertar</a></li>
+            <li class="nav-item"><a class="nav-link" href="consultar_transaccion.html">Consultar</a></li>
+            <li class="nav-item"><a class="nav-link" href="borrar_transaccion.html">Eliminar</a></li>
+        </ul>
+        </div>
+    </div>
+    </nav>
+    
+    <div class="container mt-5">
+    <h2 class="text-center mb-4">Consultar Transacción</h2>
+
+    <form id="buscar-form" class="mb-4">
+        <label for="id_venta" class="form-label">ID de la venta</label>
+        <input type="number" id="id_venta" class="form-control mb-3" placeholder="Ingrese el ID de la venta" required>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <a href="index.html" class="btn btn-secondary ms-2">Volver</a>
+    </form>
+
+    <div id="resultado" class="d-none">
+        <h4>Detalles de la transacción:</h4>
+        <ul class="list-group">
+        <li class="list-group-item"><strong>ID Venta:</strong> <span id="id_venta"></span></li>
+        <li class="list-group-item"><strong>Monto Total:</strong> $<span id="monto_total"></span></li>
+        <li class="list-group-item"><strong>Método de Pago:</strong> <span id="metodo_pago"></span></li>
+        <li class="list-group-item"><strong>Fecha Venta:</strong> <span id="fecha_venta"></span></li>
+        </ul>
+    </div>
+
+    <div id="mensaje" class="alert mt-4 d-none"></div>
+    </div>
+
+    <script>
+    document.getElementById('buscar-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+        const id = document.getElementById('id_venta').value;
+
+        fetch(`http://192.168.100.3:3001/api/transacciones/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) throw new Error(data.error);
+            document.getElementById('resultado').classList.remove('d-none');
+            document.getElementById('mensaje').classList.add('d-none');
+            document.getElementById('id_venta').textContent = data.id_venta;
+            document.getElementById('monto_total').textContent = data.monto_total;
+            document.getElementById('metodo_pago').textContent = data.metodo_pago;
+            document.getElementById('fecha_venta').textContent = data.fecha_venta ? data.fecha_venta.split('T')[0] : '';
+        })
+        .catch(err => {
+            const mensaje = document.getElementById('mensaje');
+            mensaje.classList.remove('d-none', 'alert-success');
+            mensaje.classList.add('alert', 'alert-danger');
+            mensaje.textContent = 'Transacción no encontrada';
+            document.getElementById('resultado').classList.add('d-none');
+        });
+    });
+    </script>
+</body>
+</html>

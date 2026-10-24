@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitudes de Citas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Solicitudes de Citas</h2>
+            <p class="text-muted mb-0">Lista de citas registradas en el sistema.</p>
+        </div>
+        <a href="/index.html" class="btn btn-secondary">Inicio</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID Cita</th>
+                                                        <th>Comprador / Usuario</th>
+                            <th>Placa Vehículo</th>
+                            <th>Fecha y Hora</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaCitas">
+                        <!-- Las filas se cargan dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const API_CITAS = "http://192.168.100.3:3003/api/citas";
+
+async function cargarCitas() {
+    try {
+        const respuesta = await fetch(API_CITAS);
+        const citas = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(citas.error || "No se pudieron obtener las citas.");
+                    }
+
+        const tabla = document.getElementById("tablaCitas");
+        tabla.innerHTML = "";
+
+        if (citas.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="6" class="text-center py-3">No hay citas registradas.</td></tr>`;
+            return;
+        }
+
+        citas.forEach(c => {
+            // Extraer Nombre/Correo del objeto comprador
+            const compradorTexto = c.comprador
+                ? (c.comprador.nombre || c.comprador.correo || `ID: ${c.id_comprador}`)
+                : `ID: ${c.id_comprador}`;
+
+            // Extraer Placa del objeto vehiculo
+            const placaTexto = c.vehiculo
+                ? (c.vehiculo.placa || `ID: ${c.id_vehiculo}`)
+                : `ID: ${c.id_vehiculo}`;
+
+            // Formatear Fecha y Hora
+            const fechaFormateada = c.fecha_hora
+                ? new Date(c.fecha_hora).toLocaleString()
+                : "Sin fecha";
+                
+            tabla.innerHTML += `
+                <tr>
+                    <td><strong>${c.id_cita}</strong></td>
+                    <td>${compradorTexto}</td>
+                    <td><span class="badge bg-dark">${placaTexto}</span></td>
+                    <td>${fechaFormateada}</td>
+                    <td><span class="badge bg-info text-dark">${c.estado_cita || 'Pendiente'}</span></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm me-1" onclick="editarCita(${c.id_cita})">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarCita(${c.id_cita})">Borrar</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+    } catch (error) {
+        console.error("Error al cargar citas:", error);
+        document.getElementById("tablaCitas").innerHTML = `
+            <tr><td colspan="6" class="text-center text-danger py-3">${error.message}</td></tr>
+        `;
+    }
+}
+
+async function eliminarCita(id) {
+    if (!confirm(`¿Seguro que deseas eliminar la cita #${id}?`)) return;
+    
+    try {
+        const res = await fetch(`${API_CITAS}/${id}`, { method: "DELETE" });
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || "No se pudo eliminar");
+
+        alert("Cita eliminada correctamente.");
+        cargarCitas();
+    } catch (err) {
+        alert(err.message);
+    }
+}
+
+// Cargar la lista al abrir la página
+cargarCitas();
+</script>
+
+</body>
+</html>

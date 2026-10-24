@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestionar Anuncio y Vehículo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+  <div class="card shadow-sm mx-auto" style="max-width: 650px;">
+    <div class="card-body p-4">
+      <h3 class="card-title text-center text-primary mb-4">Gestionar Anuncio de Vehículo</h3>
+
+      <div class="mb-4">
+        <label class="form-label font-weight-bold">Ingrese la Placa o ID del Vehículo</label>
+        <div class="input-group">
+          <input type="text" id="placa_buscar" class="form-control text-uppercase" placeholder="Ej: ABC123 o ID 1">
+          <button id="btn-cargar" class="btn btn-secondary" type="button">Buscar / Cargar Datos</button>
+        </div>
+        <small class="text-muted">Ingresa la placa actual o el ID del vehículo registrado para precargar sus datos.</sm>
+      </div>
+
+      <form id="edit-form" class="d-none">
+        <h5 class="text-secondary mb-3">Datos del Vehículo Asociado</h5>
+        <div class="row g-3">
+          
+          <div class="col-12 bg-light p-3 border rounded">
+            <label class="form-label fw-bold text-primary">Placa Oficial del Anuncio</label>
+            <input type="text" id="placa_oficial" class="form-control text-uppercase fw-bold" placeholder="Ej: ABC123" >
+            <small class="text-muted">Puedes corregir o asignar la placa definitiva sin crear anuncios duplicados.</sma>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Tipo de Vehículo</label>
+            <input type="text" id="tipo" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Marca</label>
+            <input type="text" id="marca" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Modelo</label>
+            <input type="text" id="modelo" class="form-control">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Año</label>
+            <input type="number" id="ano" class="form-control">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Estado</label>
+            <input type="text" id="estado" class="form-control">
+                    </div>
+
+          <hr class="my-4">
+          <h5 class="text-secondary mb-3">Datos de la Publicación Promocional</h5>
+
+          <div class="col-12">
+            <label class="form-label">Título del Anuncio</label>
+            <input type="text" id="titulo" class="form-control" placeholder="Ej: Excelente estado, único dueño" require>
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label">Precio de Publicación ($)</label>
+            <input type="number" id="precio_publicacion" class="form-control" placeholder="Ej: 48000000" required>
+          </div>
+
+          <!-- AÑADIDO: Opción de URL de Imagen -->
+          <div class="col-12">
+            <label class="form-label">URL de la Imagen (Opcional)</label>
+            <input type="url" id="imagen_url" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+            <small class="text-muted">Ingresa un enlace directo a la imagen del vehículo.</small>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Descripción Detallada</label>
+            <textarea id="descripcion" class="form-control" rows="3" placeholder="Detalles de mantenimiento, equipamiento..."> </textarea>
+          </div>
+                  </div>
+
+        <button type="submit" class="btn btn-success w-100 mt-4">Guardar / Actualizar Anuncio</button>
+      </form>
+
+      <div id="mensaje" class="alert d-none mt-3" role="alert"></div>
+
+      <div class="d-flex justify-content-between mt-4">
+        <a href="index.html" class="btn btn-outline-secondary">Volver al Inicio</a>
+        <a href="crear_publicaciones.html" class="btn btn-success">➕ Crear Publicación</a>
+        <a href="ver_publicaciones.html" class="btn btn-outline-success">Ver Anuncios Publicados</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const btnCargar = document.getElementById('btn-cargar');
+const form = document.getElementById('edit-form');
+const msg = document.getElementById('mensaje');
+
+let idVehiculoEncontrado = null;
+let idPublicacionEncontrada = null;
+let placaAnterior = null;
+
+btnCargar.addEventListener('click', async () => {
+  const busqueda = document.getElementById('placa_buscar').value.trim().toUpperCase();
+  if(!busqueda) return alert('Por favor ingrese una placa o un ID de vehículo.');
+
+  try {
+    // 1. Obtener datos del vehículo
+    const resVehiculo = await fetch('http://192.168.100.3:3005/api/vehiculos');
+    if (!resVehiculo.ok) throw new Error('Error al conectar con vehículos');
+    const listaVehiculos = await resVehiculo.json();
+
+    const vehiculoEncontrado = listaVehiculos.find(v =>
+      (v.placa && String(v.placa).trim().toUpperCase() === busqueda) ||
+      String(v.id_vehiculo) === busqueda
+    );
+
+    if (vehiculoEncontrado) {
+      idVehiculoEncontrado = vehiculoEncontrado.id_vehiculo;
+      placaAnterior = vehiculoEncontrado.placa || `OLD-${vehiculoEncontrado.id_vehiculo}`;
+
+      // 2. Verificar si ya existe un anuncio en publicaciones
+      try {
+        const resPubs = await fetch('http://192.168.100.3:3002/api/publicaciones');
+        if (resPubs.ok) {
+          const listaPubs = await resPubs.json();
+          const pubExistente = listaPubs.find(p =>
+            String(p.placa).toUpperCase() === String(placaAnterior).toUpperCase() ||
+            String(p.placa) === String(idVehiculoEncontrado)
+                      );
+          if (pubExistente) {
+            idPublicacionEncontrada = pubExistente.id_publicacion;
+            document.getElementById('descripcion').value = pubExistente.descripcion || '';
+            document.getElementById('imagen_url').value = pubExistente.imagen || pubExistente.imagen_url || '';
+          } else {
+            idPublicacionEncontrada = null;
+          }
+        }
+      } catch (e) {
+        idPublicacionEncontrada = null;
+      }
+
+      // Cargar campos del formulario
+      document.getElementById('tipo').value = vehiculoEncontrado.tipo || '';
+      document.getElementById('marca').value = vehiculoEncontrado.marca || '';
+      document.getElementById('modelo').value = vehiculoEncontrado.modelo || '';
+      document.getElementById('ano').value = vehiculoEncontrado.ano || vehiculoEncontrado.anio || '';
+      document.getElementById('estado').value = vehiculoEncontrado.estado || '';
+      document.getElementById('titulo').value = `${vehiculoEncontrado.marca || ''} ${vehiculoEncontrado.modelo || ''} ${vehiculoEncontrado.ano || ''}`.trim();
+      document.getElementById('precio_publicacion').value = vehiculoEncontrado.precio || '';
+
+      // Precargar imagen si viene del microservicio de vehículo y no de publicación
+      if (!document.getElementById('imagen_url').value) {
+        document.getElementById('imagen_url').value = vehiculoEncontrado.imagen || vehiculoEncontrado.imagen_url || '';
+      }
+      
+      if (placaAnterior.startsWith('OLD-')) {
+        document.getElementById('placa_oficial').value = '';
+        document.getElementById('placa_oficial').placeholder = 'Ingrese la placa real (Ej: ABC123)';
+      } else {
+        document.getElementById('placa_oficial').value = placaAnterior;
+      }
+
+      form.classList.remove('d-none');
+      msg.classList.add('d-none');
+    } else {
+      alert('No se encontró ningún vehículo registrado con esa placa o ID.');
+    }
+  } catch (err) {
+    console.error(err);
+    msg.className = 'alert alert-warning mt-3';
+    msg.textContent = 'Atención: No se pudo conectar con el microservicio de vehículos.';
+    msg.classList.remove('d-none');
+  }
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const nuevaPlaca = document.getElementById('placa_oficial').value.trim().toUpperCase();
+  const urlImagen = document.getElementById('imagen_url').value.trim();
+  
+  if(!nuevaPlaca) {
+    return alert('Por favor ingrese una placa válida.');
+  }
+
+  // 1. Actualizar vehículo en el microservicio 3005
+  if (idVehiculoEncontrado) {
+    try {
+      await fetch(`http://192.168.100.3:3005/api/vehiculos/${idVehiculoEncontrado}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tipo: document.getElementById('tipo').value,
+          marca: document.getElementById('marca').value,
+          modelo: document.getElementById('modelo').value,
+          ano: document.getElementById('ano').value,
+          precio: document.getElementById('precio_publicacion').value,
+          kilometraje: 0,
+          estado: document.getElementById('estado').value,
+          imagen: urlImagen,
+          placa: nuevaPlaca
+        })
+      });
+    } catch(err) {
+      console.warn("No se pudo actualizar la información en el servicio de vehículos.");
+    }
+      }
+
+  // 2. Guardar o actualizar la publicación promocional en el microservicio 3002
+  const payload = {
+    titulo: document.getElementById('titulo').value,
+    descripcion: document.getElementById('descripcion').value,
+    precio_publicacion: parseFloat(document.getElementById('precio_publicacion').value),
+    imagen: urlImagen,
+    placa: nuevaPlaca
+  };
+
+  const urlPublicacion = idPublicacionEncontrada
+    ? `http://192.168.100.3:3002/api/publicaciones/${idPublicacionEncontrada}`
+    : 'http://192.168.100.3:3002/api/publicaciones';
+
+  const metodoPublicacion = idPublicacionEncontrada ? 'PUT' : 'POST';
+
+  try {
+    const res = await fetch(urlPublicacion, {
+      method: metodoPublicacion,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    msg.className = `alert mt-3 alert-${res.ok ? 'success' : 'danger'}`;
+        msg.textContent = data.mensaje || data.error || 'Publicación guardada con éxito';
+    msg.classList.remove('d-none');
+
+    if (res.ok) {
+      form.reset();
+      form.classList.add('d-none');
+      idVehiculoEncontrado = null;
+      idPublicacionEncontrada = null;
+      placaAnterior = null;
+    }
+  } catch(err) {
+    console.error(err);
+    msg.className = 'alert alert-danger mt-3';
+    msg.textContent = 'Error al procesar la publicación en el servidor';
+    msg.classList.remove('d-none');
+  }
+});
+</script>
+</body>
+</html>

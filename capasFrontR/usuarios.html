@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Tu Vehículo Usado</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container py-5">
+
+    <!-- ENCABEZADO -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>👥 Gestión de Usuarios</h2>
+            <p id="bienvenida" class="text-muted mb-0"></p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-secondary" onclick="volverAdmin()">
+                🚗 Panel administrador
+            </button>
+            <button class="btn btn-danger" onclick="cerrarSesion()">
+                                Cerrar sesión
+            </button>
+        </div>
+    </div>
+
+    <!-- MENSAJE DE ALERTA -->
+    <div id="mensaje" class="mb-3"></div>
+
+    <!-- FORMULARIO DE USUARIOS -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <h4 id="tituloFormulario" class="mb-4">Registrar usuario</h4>
+
+            <form id="formUsuario">
+                <input type="hidden" id="usuarioId">
+
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" id="nombre" class="form-control" placeholder="Nombre completo" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Correo</label>
+                    <input type="email" id="correo" class="form-control" placeholder="correo@ejemplo.com" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" id="password" class="form-control" placeholder="Contraseña">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Rol</label>
+                    <select id="rol" class="form-select" required>
+                        <option value="">Seleccione un rol</option>
+                        <option value="cliente">Cliente</option>
+                        <option value="administrador">Administrador</option>
+			<option value="vendedor">Vendedor</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success">💾 Guardar usuario</button>
+                <button type="button" id="btnCancelar" class="btn btn-secondary d-none" onclick="cancelarEdicion()">Cancelar</butt>
+            </form>
+        </div>
+    </div>
+
+    <!-- TABLA DE USUARIOS REGISTRADOS -->
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Usuarios registrados</h4>
+                                <button class="btn btn-primary" onclick="cargarUsuarios()">🔄 Actualizar lista</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaUsuarios"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+// ==========================================
+// CONFIGURACIÓN Y AUTENTICACIÓN
+// ==========================================
+const API = "http://192.168.100.3:3004/api/usuarios";
+
+// CORREGIDO: localStorage con S mayúscula
+const usuarioActual = JSON.parse(localStorage.getItem("usuario"));
+
+// Validación segura del rol
+const rolValido = usuarioActual && usuarioActual.rol ? String(usuarioActual.rol).toLowerCase().trim() : "";
+
+if (!usuarioActual || (rolValido !== "admin" && rolValido !== "administrador")) {
+    alert("Acceso restringido a administradores.");
+    window.location.href = "/capasFrontR/login.html";
+} else {
+    const elBienvenida = document.getElementById("bienvenida");
+    if (elBienvenida) {
+        elBienvenida.textContent = "Bienvenido, " + (usuarioActual.nombre || usuarioActual.correo);
+    }
+}
+
+function mostrarMensaje(texto, tipo) {
+    const elMensaje = document.getElementById("mensaje");
+    if (elMensaje) {
+        elMensaje.innerHTML = `<div class="alert alert-${tipo}">${texto}</div>`;
+        setTimeout(() => {
+            elMensaje.innerHTML = "";
+        }, 4000);
+            }
+}
+
+// ==========================================
+// CONSULTAR USUARIOS (GET)
+// ==========================================
+async function cargarUsuarios() {
+    try {
+        const respuesta = await fetch(API);
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(datos.error || "No se pudieron consultar los usuarios");
+        }
+
+        const tabla = document.getElementById("tablaUsuarios");
+        tabla.innerHTML = "";
+
+        if (!datos || datos.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="5" class="text-center">No hay usuarios registrados.</td></tr>`;
+            return;
+        }
+
+        datos.forEach(u => {
+            const rolNormalizado = u.rol ? String(u.rol).toLowerCase().trim() : "";
+            const colorRol = (rolNormalizado === "admin" || rolNormalizado === "administrador") ? "danger" : "primary";
+            
+            tabla.innerHTML += `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.nombre || "Sin nombre"}</td>
+                    <td>${u.correo || "Sin correo"}</td>
+                    <td><span class="badge bg-${colorRol}">${u.rol || "cliente"}</span></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm me-1" onclick="editarUsuario(${u.id})">✏️ Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${u.id})">🗑️️ Eliminar</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+    } catch (error) {
+        console.error("Error:", error);
+        mostrarMensaje("No se pudieron cargar los usuarios: " + error.message, "danger");
+    }
+}
+
+// ==========================================
+// CREAR / EDITAR USUARIO (POST / PUT)
+// ==========================================
+document.getElementById("formUsuario").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    
+    const id = document.getElementById("usuarioId").value;
+    const nombre = document.getElementById("nombre").value.trim();
+    const correo = document.getElementById("correo").value.trim();
+    const password = document.getElementById("password").value;
+    const rol = document.getElementById("rol").value;
+
+    const usuario = { nombre, correo, password, rol };
+
+    try {
+        let url = id ? `${API}/${id}` : API;
+        let metodo = id ? "PUT" : "POST";
+
+        const respuesta = await fetch(url, {
+            method: metodo,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(usuario)
+        });
+
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) {
+            throw new Error(datos.error || datos.mensaje || "No se pudo guardar el usuario");
+        }
+
+        mostrarMensaje(id ? "Usuario actualizado correctamente." : "Usuario registrado correctamente.", "success");
+                cancelarEdicion();
+        await cargarUsuarios();
+
+    } catch (error) {
+        console.error("Error al guardar:", error);
+        mostrarMensaje(error.message, "danger");
+    }
+});
+
+// ==========================================
+// CARGAR DATOS PARA EDICIÓN
+// ==========================================
+async function editarUsuario(id) {
+    try {
+        const respuesta = await fetch(`${API}/${id}`);
+        const usuario = await respuesta.json();
+
+        if (!respuesta.ok) throw new Error(usuario.error || "Error al obtener usuario");
+
+        document.getElementById("usuarioId").value = usuario.id;
+        document.getElementById("nombre").value = usuario.nombre || "";
+        document.getElementById("correo").value = usuario.correo || "";
+        document.getElementById("password").value = "";
+        document.getElementById("rol").value = usuario.rol || "cliente";
+
+        document.getElementById("tituloFormulario").textContent = "Editar usuario";
+                document.getElementById("btnCancelar").classList.remove("d-none");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+    } catch (error) {
+        mostrarMensaje(error.message, "danger");
+    }
+}
+
+function cancelarEdicion() {
+    document.getElementById("formUsuario").reset();
+    document.getElementById("usuarioId").value = "";
+    document.getElementById("tituloFormulario").textContent = "Registrar usuario";
+    document.getElementById("btnCancelar").classList.add("d-none");
+}
+
+// ==========================================
+// ELIMINAR USUARIO (DELETE)
+// ==========================================
+async function eliminarUsuario(id) {
+    if (usuarioActual && Number(id) === Number(usuarioActual.id)) {
+        alert("No puedes eliminar el usuario con el que estás conectado.");
+        return;
+    }
+
+    if (!confirm("¿Seguro que deseas eliminar este usuario?")) return;
+    
+    try {
+        const respuesta = await fetch(`${API}/${id}`, { method: "DELETE" });
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) throw new Error(datos.error || "No se pudo eliminar");
+
+        mostrarMensaje("Usuario eliminado correctamente.", "success");
+        await cargarUsuarios();
+
+    } catch (error) {
+        mostrarMensaje(error.message, "danger");
+    }
+}
+
+function volverAdmin() {
+    window.location.href = "/capasFrontR/admin.html";
+}
+
+function cerrarSesion() {
+    localStorage.removeItem("usuario");
+    window.location.href = "/index.html";
+}
+
+// Carga inicial de datos
+cargarUsuarios();
+</script>
+
+</body>
+</html>

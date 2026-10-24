@@ -1,0 +1,5 @@
+node_modules/
+reporte_html/
+*.jtl
+apache-jmeter-*/
+.DS_Store

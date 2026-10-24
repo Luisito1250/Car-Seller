@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Vendedor - Tu Vehículo Usado</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card-module {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card-module:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar superior con saludo y botón de cerrar sesión -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand fw-bold" href="#">🏎️ Tu Vehículo Usado | Panel Vendedor</a>
+            <div>
+                <button onclick="cerrarSesion()" class="btn btn-outline-light btn-sm">Cerrar sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Encabezado con bienvenida personalizada -->
+        <div class="text-center mb-5">
+            <h1 class="fw-bold">Bienvenido, <span id="bienvenida" class="text-success">Vendedor</span></h1>
+            <p class="text-muted">Gestiona tus inventarios, ofertas y agenda de clientes:</p>
+        </div>
+
+        <!-- Fila de Tarjetas para el Vendedor -->
+        <div class="row g-4 justify-content-center">
+
+            <!-- 1. Módulo Publicar / Gestionar Vehículos -->
+            <div class="col-md-4">
+                <div class="card card-module h-100 border-success">
+                    <div class="card-body text-center p-4">
+                        <div class="fs-1 mb-2">🚘</div>
+                        <h4 class="card-title fw-bold text-success">Mis Publicaciones</h4>
+                        <p class="card-text text-muted">Registra nuevos vehículos o edita tus anuncios publicados.</p>
+                        <a href="/CapasFrontC/ver_publicaciones_vendedor.html" class="btn btn-success w-100 py-2 fw-semibold">Gestionar Vehículos</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Módulo Gestión de Citas -->
+            <div class="col-md-4">
+                <div class="card card-module h-100 border-warning">
+                    <div class="card-body text-center p-4">
+                        <div class="fs-1 mb-2">📅</div>
+                        <h4 class="card-title fw-bold text-warning">Citas Agendadas</h4>
+                        <p class="card-text text-muted">Revisa y confirma las solicitudes de Test Drive de tus clientes.</p>
+                        <a href="/capasFrontM/ver_citas_vendedor.html" class="btn btn-warning w-100 py-2 fw-semibold text-dark">Ver Citas</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Módulo Consultar Catálogo -->
+            <div class="col-md-4">
+                <div class="card card-module h-100 border-info">
+                    <div class="card-body text-center p-4">
+                        <div class="fs-1 mb-2">🔍</div>
+                        <h4 class="card-title fw-bold text-info">Ver Catálogo General</h4>
+                        <p class="card-text text-muted">Explora la lista general de publicaciones disponibles en la plataforma.</p>
+                        <a href="/CapasFrontC/index.html" class="btn btn-info w-100 py-2 fw-semibold text-white">Ver Catálogo</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+    // ==========================================
+    // COMPROBACIÓN DE AUTENTICACIÓN Y ROL
+    // ==========================================
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    if (!usuario) {
+        alert("Debe iniciar sesión para acceder.");
+        window.location.href = "/index.html";
+    } else {
+        // Opcional: Validar que el rol sea vendedor
+        if (usuario.rol && usuario.rol !== 'vendedor') {
+            alert("No tienes permisos para acceder a esta vista.");
+            window.location.href = "/index.html";
+        } else {
+            const elBienvenida = document.getElementById("bienvenida");
+            if (elBienvenida) {
+                elBienvenida.textContent = usuario.nombre || usuario.correo;
+            }
+        }
+    }
+
+    // ==========================================
+    // CERRAR SESIÓN
+    // ==========================================
+    function cerrarSesion() {
+        localStorage.removeItem("usuario");
+        window.location.href = "/index.html";
+    }
+</script>
+
+
+
+</body>
+</html>

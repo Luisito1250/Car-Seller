@@ -1,0 +1,176 @@
+services:
+  db-transacciones:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: transacciones
+    volumes:
+      - ./sql_scripts/transacciones.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - red-almacen
+
+  db-concesionario:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: consesionario
+    volumes:
+      - ./sql_scripts/consesionario.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - red-almacen
+
+  db-citas:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: solicitudcita
+    volumes:
+      - ./sql_scripts/solicitudcita.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - red-almacen
+
+  db-usuarios:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: usuarios
+    volumes:
+      - ./sql_scripts/usuarios.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - red-almacen
+
+  db-vehiculos:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: capasalmacen
+    volumes:
+      - ./sql_scripts/capasalmacen.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - red-almacen
+
+  ms-transacciones:
+    image: luisito1289/ms-transacciones:latest
+    build: ./Transacciones
+    ports:
+      - "3001:3001"
+    environment:
+      DB_HOST: db-transacciones
+      DB_USER: root
+      DB_PASSWORD: root
+    networks:
+      - red-almacen
+
+  ms-publicaciones:
+    image: luisito1289/ms-publicaciones:latest
+    build: ./Publicaciones
+    ports:
+      - "3002:3002"
+    environment:
+      DB_HOST: db-concesionario
+      DB_USER: root
+      DB_PASSWORD: root
+    networks:
+      - red-almacen
+
+  ms-citas:
+    image: luisito1289/ms-citas:latest
+    build: ./Citas
+    ports:
+      - "3003:3003"
+    environment:
+      DB_HOST: db-citas
+      DB_USER: root
+      DB_PASSWORD: root
+    networks:
+      - red-almacen
+
+  ms-usuarios:
+    image: luisito1289/ms-usuarios:latest
+    build: ./Usuarios
+    ports:
+      - "3004:3004"
+    environment:
+      DB_HOST: db-usuarios
+      DB_USER: root
+      DB_PASSWORD: root
+    networks:
+      - red-almacen
+
+  ms-vehiculos:
+    image: luisito1289/ms-vehiculos:latest
+    build: ./Vehiculos
+    ports:
+      - "3005:3005"
+    environment:
+      DB_HOST: db-vehiculos
+      DB_USER: root
+      DB_PASSWORD: root
+    networks:
+      - red-almacen
+
+  front-main:
+    image: luisito1289/front-main:latest
+    build: .
+    ports:
+      - "8080:80"
+    networks:
+      - red-almacen
+
+  front-transacciones:
+    image: luisito1289/front-transacciones:latest
+    build: ./capasFrontL
+    ports:
+      - "8001:80"
+    networks:
+      - red-almacen
+
+  front-publicaciones:
+    image: luisito1289/front-publicaciones:latest
+    build: ./CapasFrontC
+    ports:
+      - "8002:80"
+    networks:
+      - red-almacen
+
+  front-citas:
+    image: luisito1289/front-citas:latest
+    build: ./capasFrontM
+    ports:
+      - "8003:80"
+    networks:
+      - red-almacen
+
+  front-usuarios:
+    image: luisito1289/front-usuarios:latest
+    build: ./capasFrontR
+    ports:
+      - "8004:80"
+    networks:
+      - red-almacen
+
+  front-vehiculos:
+    image: luisito1289/front-vehiculos:latest
+    build: ./capasFrontS
+    ports:
+      - "8005:80"
+    networks:
+      - red-almacen
+
+  haproxy:
+    image: haproxy:alpine
+    ports:
+      - "80:80"
+    configs:
+      - source: haproxy_config_v19
+        target: /usr/local/etc/haproxy/haproxy.cfg
+    networks:
+      - red-almacen
+
+configs:
+  haproxy_config_v19:
+    file: ./haproxy.cfg
+
+networks:
+  red-almacen:
+    driver: overlay

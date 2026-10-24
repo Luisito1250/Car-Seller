@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar Cita</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="card shadow-sm mx-auto" style="max-width: 650px;">
+        <div class="card-body p-4">
+            <h2 class="text-center">Consultar Cita</h2>
+            <p class="text-center text-muted">Ingresa el ID de la cita que deseas consultar.</p>
+
+            <form id="consulta-form">
+                <div class="mb-3">
+                    <label for="id" class="form-label">ID de la Cita</label>
+                    <input type="number" id="id" class="form-control" min="1" required placeholder="Ej: 1">
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-info text-white">Consultar</button>
+                </div>
+            </form>
+            
+            <div id="resultado" class="mt-4"></div>
+
+            <div class="text-center mt-4">
+                <a href="index.html" class="btn btn-secondary">Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('consulta-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const id = document.getElementById('id').value;
+    const resultado = document.getElementById('resultado');
+
+    try {
+        const respuesta = await fetch(`http://192.168.100.3:3003/api/citas/${id}`);
+
+        if (respuesta.status === 404) {
+            resultado.innerHTML = `
+                <div class="alert alert-warning">
+                    No existe una cita registrada con el ID ${id}.
+                </div>
+            `;
+                        return;
+        }
+
+        if (!respuesta.ok) {
+            throw new Error('No se pudo consultar la cita');
+        }
+
+        const cita = await respuesta.json();
+        const fechaFormateada = new Date(cita.fecha_hora).toLocaleString();
+
+        resultado.innerHTML = `
+            <div class="card border-info">
+                <div class="card-body">
+                    <h4 class="mb-3 text-info">Cita Encontrada</h4>
+                    <p><strong>ID Cita:</strong> ${cita.id_cita}</p>
+                    <p><strong>ID Comprador:</strong> ${cita.id_comprador}</p>
+                    <p><strong>ID Vehículo:</strong> ${cita.id_vehiculo}</p>
+                    <p><strong>Fecha y Hora:</strong> ${fechaFormateada}</p>
+                    <p><strong>Estado:</strong> <span class="badge bg-info text-dark">${cita.estado_cita}</span></p>
+                </div>
+            </div>
+        `;
+
+    } catch (error) {
+        resultado.innerHTML = `
+            <div class="alert alert-danger">
+                                Error al conectar con el servidor o la base de datos.
+            </div>
+        `;
+        console.error(error);
+    }
+});
+</script>
+
+</body>
+</html>
