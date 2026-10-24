@@ -1,6 +1,6 @@
-# Proyecto Almacén - Arquitectura de Microservicios
+# Car Seller
 
-Aplicación web orientada a microservicios para la gestión de concesionario, transacciones, citas, usuarios y vehículos. La arquitectura implementa el patrón *Database per Service*, donde cada módulo posee su propia base de datos aislada, backend en Node.js y micro-frontend.
+Aplicación web orientada a microservicios para la gestión de publicaciones, transacciones, citas, usuarios y vehículos. La arquitectura implementa el patrón *Database per Service*, donde cada módulo posee su propia base de datos aislada, backend en Node.js y micro-frontend.
 
 ---
 
