@@ -38,6 +38,15 @@ La infraestructura está orquestada sobre **Docker Swarm** dentro de una máquin
 | **front-usuarios** | `8004` | Interfaz gráfica de usuarios |
 | **front-vehiculos** | `8005` | Interfaz gráfica de vehículos |
 
+### Clúster de Procesamiento Distribuido (Apache Spark)
+
+Integra una capa analítica desplegada sobre la misma red `red-almacen` de Docker Swarm para procesar conjuntos de datos de vehículos en memoria y exportar métricas en formato JSON hacia el dashboard principal (`front-main`) mediante volúmenes compartidos.
+
+| Componente | Puerto / Red | Volumen Montado | Función |
+| :--- | :--- | :--- | :--- |
+| **spark-master** | `8081` (Web UI) / `7077` (RPC) | `./spark_cluster/*` $\rightarrow$ `/opt/spark/*` | Coordinación del clúster y recepción de trabajos |
+| **spark-worker (x2)** | Red `red-almacen` | `./spark_cluster/*` $\rightarrow$ `/opt/spark/*` | Procesamiento distribuido en memoria de datasets CSV |
+
 ---
 
 ## Estructura del Repositorio
@@ -58,4 +67,8 @@ La infraestructura está orquestada sobre **Docker Swarm** dentro de una máquin
 ├── Citas/                      # Código fuente ms-citas (Node.js)
 ├── Usuarios/                   # Código fuente ms-usuarios (Node.js)
 ├── Vehiculos/                  # Código fuente ms-vehiculos (Node.js)
-└── capasFront*/                # Código fuente de los micro-frontends
+├── capasFront*/                # Código fuente de los micro-frontends
+└── spark_cluster/              # Capa de procesamiento distribuido con Apache Spark
+    ├── data/                   # Datasets CSV de entrada
+    ├── jobs/                   # Scripts PySpark (analisis_autos.py)
+    └── reportes/               # Reportes JSON compartidos con front-main
