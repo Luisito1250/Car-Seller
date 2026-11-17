@@ -1,0 +1,31 @@
+{
+  "dataset_procesado": "autos_prueba.csv",
+  "total_vehiculos_analizados": 5,
+  "precio_promedio_global": 20700.0,
+  "top_marcas": [
+    {
+      "make": "Toyota",
+      "cantidad": 2,
+      "precio_promedio": 25250.0,
+      "precio_maximo": 32000.0
+    },
+    {
+      "make": "Kia",
+      "cantidad": 1,
+      "precio_promedio": 16800.0,
+      "precio_maximo": 16800.0
+    },
+    {
+      "make": "Chevrolet",
+      "cantidad": 1,
+      "precio_promedio": 15200.0,
+      "precio_maximo": 15200.0
+    },
+    {
+      "make": "Mazda",
+      "cantidad": 1,
+      "precio_promedio": 21000.0,
+      "precio_maximo": 21000.0
+    }
+  ]
+}
