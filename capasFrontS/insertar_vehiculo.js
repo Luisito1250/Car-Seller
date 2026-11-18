@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             // REGISTRAR VEHÍCULO EN EL MICROSERVICIO DE INVENTARIO (:3005)
-            const resVehiculo = await fetch('http://192.168.100.3:3005/api/vehiculos', {
+            const resVehiculo = await fetch('http://158.23.58.55:3005/api/vehiculos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 estado: 'Disponible'
             };
 
-            const resPublicacion = await fetch('http://192.168.100.3:3002/api/publicaciones', {
+            const resPublicacion = await fetch('http://158.23.58.55:3002/api/publicaciones', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payloadPublicacion)

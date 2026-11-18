@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const contenedor = document.getElementById('publicaciones-container');
 
     try {
-        const respuesta = await fetch('http://192.168.100.3:3000/api/publicaciones');
+        const respuesta = await fetch('http://158.23.58.55:3000/api/publicaciones');
         const publicaciones = await respuesta.json();
 
         if (!respuesta.ok) throw new Error('Error al obtener publicaciones');

@@ -47,7 +47,7 @@
         const rol = document.getElementById('rol').value;
 
         try {
-          const response = await fetch('http://192.168.100.3:3004/api/usuarios/', {
+          const response = await fetch('http://158.23.58.55:3004/api/usuarios/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, correo, password, rol })

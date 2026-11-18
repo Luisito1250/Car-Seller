@@ -49,7 +49,7 @@
 
     async function cargarPublicaciones() {
         try {
-            const res = await fetch('http://192.168.100.3:3002/api/publicaciones');
+            const res = await fetch('http://158.23.58.55:3002/api/publicaciones');
             if (!res.ok) throw new Error('Error al conectar con la API');
 
             todasLasPublicaciones = await res.json();

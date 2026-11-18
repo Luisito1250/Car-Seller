@@ -58,7 +58,7 @@
         alerta.classList.add('d-none');
 
         try {
-            const respuesta = await fetch('http://192.168.100.3:3004/api/usuarios/login', {
+            const respuesta = await fetch('http://158.23.58.55:3004/api/usuarios/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ correo: correo,

@@ -10,7 +10,7 @@ La infraestructura está orquestada sobre **Docker Swarm** dentro de una máquin
 
 | Componente | IP / Puerto | Función |
 | :--- | :--- | :--- |
-| **HAProxy** | `192.168.100.3:80` | Balanceador de carga y enrutamiento centralizado |
+| **HAProxy** | `158.23.58.55:80` | Balanceador de carga y enrutamiento centralizado |
 | **Docker Swarm** | Red `red-almacen` | Orquestación de contenedores y escalabilidad horizontal |
 
 ---

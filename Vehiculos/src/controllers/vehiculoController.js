@@ -38,7 +38,7 @@ router.post('/api/vehiculos', async (req, res) => {
     
     // 2. Crear la publicación de forma automática en el microservicio de Publicaciones (puerto 3002)
     try {
-      await axios.post('http://192.168.100.3:3002/api/publicaciones', {
+      await axios.post('http://158.23.58.55:3002/api/publicaciones', {
         titulo: `${marca} ${modelo} ${ano}`,
         descripcion: `Vehículo ${tipo} marca ${marca} modelo ${modelo}. Estado: ${estado || 'Disponible'}.`,
         precio_publicacion: precio,

@@ -14,21 +14,21 @@ router.get('/', async (req, res) => {
 
         if (t.id_comprador) {
           try {
-            const resComprador = await axios.get(`http://192.168.100.3:3004/api/usuarios/${t.id_comprador}`);
+            const resComprador = await axios.get(`http://158.23.58.55:3004/api/usuarios/${t.id_comprador}`);
             compradorData = resComprador.data;
           } catch (e) { compradorData = { nota: 'Comprador no disponible' }; }
         }
 
         if (t.id_vendedor) {
           try {
-            const resVendedor = await axios.get(`http://192.168.100.3:3004/api/usuarios/${t.id_vendedor}`);
+            const resVendedor = await axios.get(`http://158.23.58.55:3004/api/usuarios/${t.id_vendedor}`);
             vendedorData = resVendedor.data;
           } catch (e) { vendedorData = { nota: 'Vendedor no disponible' }; }
         }
 
         if (t.id_vehiculo) {
           try {
-            const resVehiculo = await axios.get(`http://192.168.100.3:3005/api/vehiculos/${t.id_vehiculo}`);
+            const resVehiculo = await axios.get(`http://158.23.58.55:3005/api/vehiculos/${t.id_vehiculo}`);
             vehiculoData = resVehiculo.data;
           } catch (e) { vehiculoData = { nota: 'Vehículo no disponible' }; }
         }
@@ -63,18 +63,18 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: "Todos los campos son obligatorios" });
     }
 
-    const resVehiculo = await axios.get(`http://192.168.100.3:3005/api/vehiculos/${id_vehiculo}`);
+    const resVehiculo = await axios.get(`http://158.23.58.55:3005/api/vehiculos/${id_vehiculo}`);
     const vehiculo = resVehiculo.data;
     if (vehiculo.estado === 'Vendido') {
       return res.status(400).json({ error: "El vehículo ya se encuentra vendido" });
     }
 
-    await axios.get(`http://192.168.100.3:3004/api/usuarios/${id_comprador}`);
-    await axios.get(`http://192.168.100.3:3004/api/usuarios/${id_vendedor}`);
+    await axios.get(`http://158.23.58.55:3004/api/usuarios/${id_comprador}`);
+    await axios.get(`http://158.23.58.55:3004/api/usuarios/${id_vendedor}`);
 
         if (id_publicacion) {
       try {
-        await axios.get(`http://192.168.100.3:3002/api/publicaciones/${id_publicacion}`);
+        await axios.get(`http://158.23.58.55:3002/api/publicaciones/${id_publicacion}`);
       } catch (e) {
         console.warn("Publicación no encontrada, se omite.");
       }
@@ -92,7 +92,7 @@ router.post('/', async (req, res) => {
     );
 
     try {
-      await axios.put(`http://192.168.100.3:3005/api/vehiculos/${id_vehiculo}/estado`, { estado: 'Vendido' });
+      await axios.put(`http://158.23.58.55:3005/api/vehiculos/${id_vehiculo}/estado`, { estado: 'Vendido' });
     } catch (e) {
       console.warn("No se pudo actualizar el estado del vehículo a Vendido");
     }

@@ -8,7 +8,7 @@ document.getElementById('publicar-form').addEventListener('submit', async functi
     const mensaje = document.getElementById('mensaje');
 
     try {
-        const respuesta = await fetch('http://192.168.100.3:3000/api/publicaciones', {
+        const respuesta = await fetch('http://158.23.58.55:3000/api/publicaciones', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id_vehiculo, id_vendedor, descripcion, fotos_url })

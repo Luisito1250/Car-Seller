@@ -12,7 +12,7 @@ router.get('/api/publicaciones', async (req, res) => {
 
         let listaVehiculos = [];
         try {
-            const resVehiculos = await axios.get(`http://192.168.100.3:3005/api/vehiculos`);
+            const resVehiculos = await axios.get(`http://158.23.58.55:3005/api/vehiculos`);
             listaVehiculos = resVehiculos.data;
         } catch (e) {
             console.warn("Advertencia: No se pudo obtener la lista de vehículos desde el microservicio.");

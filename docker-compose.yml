@@ -50,7 +50,7 @@ services:
       - red-almacen
 
   ms-transacciones:
-    image: luisito1289/ms-transacciones:latest
+    image: marco367/ms-transacciones:latest
     build: ./Transacciones
     ports:
       - "3001:3001"
@@ -62,7 +62,7 @@ services:
       - red-almacen
 
   ms-publicaciones:
-    image: luisito1289/ms-publicaciones:latest
+    image: marco367/ms-publicaciones:latest
     build: ./Publicaciones
     ports:
       - "3002:3002"
@@ -74,7 +74,7 @@ services:
       - red-almacen
 
   ms-citas:
-    image: luisito1289/ms-citas:latest
+    image: marco367/ms-citas:latest
     build: ./Citas
     ports:
       - "3003:3003"
@@ -86,7 +86,7 @@ services:
       - red-almacen
 
   ms-usuarios:
-    image: luisito1289/ms-usuarios:latest
+    image: marco367/ms-usuarios:latest
     build: ./Usuarios
     ports:
       - "3004:3004"
@@ -98,7 +98,7 @@ services:
       - red-almacen
 
   ms-vehiculos:
-    image: luisito1289/ms-vehiculos:latest
+    image: marco367/ms-vehiculos:latest
     build: ./Vehiculos
     ports:
       - "3005:3005"
@@ -110,7 +110,7 @@ services:
       - red-almacen
 
   front-main:
-    image: luisito1289/front-main:latest
+    image: marco367/front-main:latest
     build: .
     ports:
       - "8080:80"
@@ -120,7 +120,7 @@ services:
       - ./spark_cluster/reportes:/usr/share/nginx/html/reportes
 
   front-transacciones:
-    image: luisito1289/front-transacciones:latest
+    image: marco367/front-transacciones:latest
     build: ./capasFrontL
     ports:
       - "8001:80"
@@ -128,7 +128,7 @@ services:
       - red-almacen
 
   front-publicaciones:
-    image: luisito1289/front-publicaciones:latest
+    image: marco367/front-publicaciones:latest
     build: ./CapasFrontC
     ports:
       - "8002:80"
@@ -136,7 +136,7 @@ services:
       - red-almacen
 
   front-citas:
-    image: luisito1289/front-citas:latest
+    image: marco367/front-citas:latest
     build: ./capasFrontM
     ports:
       - "8003:80"
@@ -144,7 +144,7 @@ services:
       - red-almacen
 
   front-usuarios:
-    image: luisito1289/front-usuarios:latest
+    image: marco367/front-usuarios:latest
     build: ./capasFrontR
     ports:
       - "8004:80"
@@ -152,7 +152,7 @@ services:
       - red-almacen
 
   front-vehiculos:
-    image: luisito1289/front-vehiculos:latest
+    image: marco367/front-vehiculos:latest
     build: ./capasFrontS
     ports:
       - "8005:80"
@@ -162,9 +162,13 @@ services:
   haproxy:
     image: haproxy:alpine
     ports:
-      - "80:80"
+      -
+        target: 80
+        published: 80
+        protocol: tcp
+        mode: host
     configs:
-      - source: haproxy_config_v19
+      - source: haproxy_config_v22
         target: /usr/local/etc/haproxy/haproxy.cfg
     networks:
       - red-almacen
@@ -200,7 +204,7 @@ services:
       replicas: 2
 
 configs:
-  haproxy_config_v19:
+  haproxy_config_v22:
     file: ./haproxy.cfg
 
 networks:

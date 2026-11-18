@@ -97,7 +97,7 @@
 
         async function cargarPublicaciones() {
             try {
-                const res = await fetch('http://192.168.100.3:3002/api/publicaciones');
+                const res = await fetch('http://158.23.58.55:3002/api/publicaciones');
                 if (!res.ok) throw new Error('Error al conectar con la API');
 
                 const datos = await res.json();
@@ -201,7 +201,7 @@
             };
 
             try {
-                const res = await fetch(`http://192.168.100.3:3002/api/publicaciones/${id}`, {
+                const res = await fetch(`http://158.23.58.55:3002/api/publicaciones/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -225,7 +225,7 @@
             if (!confirm('¿Estás seguro de que deseas eliminar este vehículo?')) return;
 
             try {
-                const res = await fetch(`http://192.168.100.3:3002/api/publicaciones/${id}`, {
+                const res = await fetch(`http://158.23.58.55:3002/api/publicaciones/${id}`, {
                     method: 'DELETE'
                 });
 
