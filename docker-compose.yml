@@ -164,7 +164,7 @@ services:
     ports:
       - "80:80"
     configs:
-      - source: haproxy_config_v19
+      - source: haproxy_config_v20
         target: /usr/local/etc/haproxy/haproxy.cfg
     networks:
       - red-almacen
@@ -200,7 +200,7 @@ services:
       replicas: 2
 
 configs:
-  haproxy_config_v19:
+  haproxy_config_v20:
     file: ./haproxy.cfg
 
 networks:
