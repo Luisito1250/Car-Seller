@@ -1,0 +1,16 @@
+componente,url,codigo_http,tiempo_s
+API publicaciones (HAProxy),http://192.168.100.3/api/publicaciones,200,0.232550
+API vehiculos (HAProxy),http://192.168.100.3/api/vehiculos,200,0.009901
+API transacciones (HAProxy),http://192.168.100.3/api/transacciones,200,0.274723
+API citas (HAProxy),http://192.168.100.3/api/citas,200,0.160741
+API usuarios (HAProxy),http://192.168.100.3/api/usuarios,200,0.007019
+Front main,http://192.168.100.3:8080,200,0.013567
+Front transacciones,http://192.168.100.3:8001,200,0.010549
+Front publicaciones,http://192.168.100.3:8002,200,0.010053
+Front citas,http://192.168.100.3:8003,200,0.008920
+Front usuarios,http://192.168.100.3:8004,200,0.009505
+Front vehiculos,http://192.168.100.3:8005,200,0.002021
+HAProxy stats,http://192.168.100.3/stats,200,0.004118
+Spark Master UI,http://192.168.100.3:8081,200,0.319163
+Reporte Spark JSON,http://192.168.100.3:8080/reportes/reporte_dashboard.json,200,0.001219
+Analytics vehiculos,http://192.168.100.3:3005/vehiculos/analytics,200,0.003513
