@@ -168,7 +168,7 @@ services:
         protocol: tcp
         mode: host
     configs:
-      - source: haproxy_config_v22
+      - source: haproxy_config_v23
         target: /usr/local/etc/haproxy/haproxy.cfg
     networks:
       - red-almacen
@@ -204,7 +204,7 @@ services:
       replicas: 2
 
 configs:
-  haproxy_config_v22:
+  haproxy_config_v23:
     file: ./haproxy.cfg
 
 networks:
