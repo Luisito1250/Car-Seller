@@ -32,16 +32,17 @@ DROP TABLE IF EXISTS `vehiculo`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vehiculo` (
   `id_vehiculo` int NOT NULL AUTO_INCREMENT,
-  `tipo` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `marca` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `modelo` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tipo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `marca` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `modelo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `ano` int DEFAULT NULL,
   `precio` double DEFAULT NULL,
   `kilometraje` int DEFAULT NULL,
-  `estado` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `imagen` longtext COLLATE utf8mb4_general_ci,
+  `estado` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `imagen` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `placa` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_vehiculo`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,7 +51,7 @@ CREATE TABLE `vehiculo` (
 
 LOCK TABLES `vehiculo` WRITE;
 /*!40000 ALTER TABLE `vehiculo` DISABLE KEYS */;
-INSERT INTO `vehiculo` VALUES (1,'automovil','mazda ','cx 90',2022,120000000,20000,'perfecto estado ',NULL),(3,'automovil','mazda ','cx 30',2025,120000000,2000,'perfecto estado ',NULL),(4,'camioneta','Honda','CR-V',2025,120000000,2000,'perfecto estado ',NULL);
+INSERT INTO `vehiculo` VALUES (1,'automovil','Mazda','CX-90',2022,120000000,20000,'Excelente',NULL,'KLM412'),(2,'automovil','Toyota','Corolla Cross',2024,115000000,8500,'Excelente',NULL,'JTR839'),(3,'automovil','Mazda','CX-30',2025,120000000,2000,'Nuevo',NULL,'HNP205'),(4,'camioneta','Honda','CR-V',2025,135000000,2000,'Excelente',NULL,'FBC914'),(5,'camioneta','Toyota','Fortuner',2023,195000000,18000,'Bueno',NULL,'GXZ527'),(6,'automovil','Chevrolet','Onix Turbo',2023,68000000,24500,'Bueno',NULL,'DQR681'),(7,'camioneta','Hyundai','Tucson',2024,128000000,11200,'Excelente',NULL,'LMV390'),(8,'automovil','Kia','Sportage',2022,108000000,31000,'Bueno',NULL,'BKS748'),(9,'automovil','lamborghini','Revuelto',2025,1000000000,0,'Nuevo','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG9CHF3uObwRe-NSMKJbTF2wYh2mHa0slzXlFNjgblJw&s=10','FGH029'),(10,'automovil','lamborghini','Urus',2025,100000000,0,'Nuevo','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgMxeNMYaBdx-MFhSxvgLZu027wmtKTrOedtPa4VUsJQ&s','ASD132');
 /*!40000 ALTER TABLE `vehiculo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -63,4 +64,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-18 14:57:05
+-- Dump completed on 2026-11-20  5:27:10

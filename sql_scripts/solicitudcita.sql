@@ -35,9 +35,9 @@ CREATE TABLE `solicitudes` (
   `id_comprador` int DEFAULT NULL,
   `id_vehiculo` int DEFAULT NULL,
   `fecha_hora` datetime DEFAULT NULL,
-  `estado_cita` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `estado_cita` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id_cita`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +46,7 @@ CREATE TABLE `solicitudes` (
 
 LOCK TABLES `solicitudes` WRITE;
 /*!40000 ALTER TABLE `solicitudes` DISABLE KEYS */;
-INSERT INTO `solicitudes` VALUES (2,1,1,'2026-10-10 14:30:00','Pendiente');
+INSERT INTO `solicitudes` VALUES (1,2,1,'2026-10-08 10:00:00','Completada'),(2,1,1,'2026-10-10 14:30:00','Pendiente'),(3,2,2,'2026-10-21 11:58:00','Pendiente'),(4,29,4,'2026-11-05 09:30:00','Confirmada'),(5,2,5,'2026-11-12 15:00:00','Confirmada'),(6,29,7,'2026-11-18 16:15:00','Pendiente'),(7,2,9,'2026-11-21 00:22:00','Pendiente');
 /*!40000 ALTER TABLE `solicitudes` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -59,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-18 14:57:07
+-- Dump completed on 2026-11-20  5:27:11

@@ -32,12 +32,12 @@ DROP TABLE IF EXISTS `usuario`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `correo` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `password` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `rol` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nombre` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `correo` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `rol` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +46,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'alexa','mira@uao.edu.co','123','administrador'),(2,'juan','juan@gmail.com','123','cliente'),(25,'vendedor','vendedor@gmail.com','123','vendedor');
+INSERT INTO `usuario` VALUES (1,'alexa','mira@uao.edu.co','123','administrador'),(2,'juan','juan@gmail.com','123','cliente'),(25,'vendedor','vendedor@gmail.com','123','vendedor'),(26,'Luisito','luisito@gmail.com','123','administrador'),(27,'Marco','marco@gmail.com','123','administrador'),(28,'Varela','varela@gmail.com','123','vendedor'),(29,'Isabella','isabella@gmail.com','Isa12@','cliente');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -59,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-18 14:57:06
+-- Dump completed on 2026-11-20  5:27:12

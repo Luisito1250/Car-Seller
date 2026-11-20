@@ -33,13 +33,13 @@ DROP TABLE IF EXISTS `transaccion`;
 CREATE TABLE `transaccion` (
   `id_venta` int NOT NULL AUTO_INCREMENT,
   `monto_total` double DEFAULT NULL,
-  `metodo_pago` varchar(25) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `metodo_pago` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `fecha_venta` date DEFAULT NULL,
   `id_comprador` int DEFAULT NULL,
   `id_vendedor` int DEFAULT NULL,
   `id_vehiculo` int DEFAULT NULL,
   PRIMARY KEY (`id_venta`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,7 @@ CREATE TABLE `transaccion` (
 
 LOCK TABLES `transaccion` WRITE;
 /*!40000 ALTER TABLE `transaccion` DISABLE KEYS */;
-INSERT INTO `transaccion` VALUES (1,100000,'Efectivo','2026-09-16',1,25,1),(2,250000,'Efectivo','2026-09-23',2,25,3);
+INSERT INTO `transaccion` VALUES (1,120000000,'Efectivo','2026-09-16',1,25,1),(2,115000000,'Transferencia','2026-09-23',2,25,2),(3,135000000,'Credito','2026-10-14',29,28,4),(4,68000000,'Transferencia','2026-11-02',2,25,6),(5,195000000,'Credito','2026-11-15',29,28,5);
 /*!40000 ALTER TABLE `transaccion` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -61,4 +61,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-18 14:57:12
+-- Dump completed on 2026-11-20  5:27:11
