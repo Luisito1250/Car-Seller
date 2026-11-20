@@ -19,7 +19,7 @@ document.getElementById('editar-form').addEventListener('submit', async function
     const mensaje = document.getElementById('mensaje');
 
     try {
-        const respuesta = await fetch(`http://192.168.100.3:3005/api/vehiculos/${id}`, {
+        const respuesta = await fetch(`http://158.23.58.55:3005/api/vehiculos/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ tipo, marca, modelo, ano, precio, kilometraje, estado })

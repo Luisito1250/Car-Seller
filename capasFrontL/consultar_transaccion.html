@@ -52,7 +52,7 @@
                 e.preventDefault();
         const id = document.getElementById('id_venta').value;
 
-        fetch(`http://192.168.100.3:3001/api/transacciones/${id}`)
+        fetch(`http://158.23.58.55:3001/api/transacciones/${id}`)
         .then(res => res.json())
         .then(data => {
             if (data.error) throw new Error(data.error);

@@ -17,7 +17,7 @@ router.get('/api/citas', async (req, res) => {
 
         if (c.id_comprador) {
           try {
-            const resComprador = await axios.get(`http://192.168.100.3:3004/api/usuarios/${c.id_comprador}`);
+            const resComprador = await axios.get(`http://158.23.58.55:3004/api/usuarios/${c.id_comprador}`);
             compradorData = resComprador.data;
           } catch (e) {
             compradorData = { nota: 'Comprador no disponible' };
@@ -26,7 +26,7 @@ router.get('/api/citas', async (req, res) => {
 
         if (c.id_vehiculo) {
           try {
-            const resVehiculo = await axios.get(`http://192.168.100.3:3005/api/vehiculos/${c.id_vehiculo}`);
+            const resVehiculo = await axios.get(`http://158.23.58.55:3005/api/vehiculos/${c.id_vehiculo}`);
             vehiculoData = resVehiculo.data;
           } catch (e) {
             vehiculoData = { nota: 'Vehículo no disponible' };
@@ -65,11 +65,11 @@ router.get('/api/citas/:id', async (req, res) => {
 
     try {
       if (cita.id_comprador) {
-        const resComprador = await axios.get(`http://192.168.100.3:3004/api/usuarios/${cita.id_comprador}`);
+        const resComprador = await axios.get(`http://158.23.58.55:3004/api/usuarios/${cita.id_comprador}`);
         cita.comprador = resComprador.data;
       }
       if (cita.id_vehiculo) {
-        const resVehiculo = await axios.get(`http://192.168.100.3:3005/api/vehiculos/${cita.id_vehiculo}`);
+        const resVehiculo = await axios.get(`http://158.23.58.55:3005/api/vehiculos/${cita.id_vehiculo}`);
         cita.vehiculo = resVehiculo.data;
               }
     } catch (e) {
@@ -97,7 +97,7 @@ router.post('/api/citas', async (req, res) => {
     // 1. Obtener ID del vehículo si enviaron la placa
     if (!id_vehiculo && placa) {
       try {
-        const resVehiculos = await axios.get('http://192.168.100.3:3005/api/vehiculos');
+        const resVehiculos = await axios.get('http://158.23.58.55:3005/api/vehiculos');
         const vehiculoEncontrado = resVehiculos.data.find(v =>
           v.placa && String(v.placa).trim().toUpperCase() === String(placa).trim().toUpperCase()
         );
@@ -115,7 +115,7 @@ router.post('/api/citas', async (req, res) => {
     const emailOBusqueda = correo || usuario;
     if (!id_comprador && emailOBusqueda) {
       try {
-        const resUsuarios = await axios.get('http://192.168.100.3:3004/api/usuarios');
+        const resUsuarios = await axios.get('http://158.23.58.55:3004/api/usuarios');
         const usuarioEncontrado = resUsuarios.data.find(u =>
           (u.correo && u.correo.toLowerCase() === emailOBusqueda.toLowerCase()) ||
           (u.nombre && u.nombre.toLowerCase() === emailOBusqueda.toLowerCase()) ||
@@ -172,7 +172,7 @@ router.put('/api/citas/:id', async (req, res) => {
     if ((!id_comprador || id_comprador === 'null') && (correo || usuario)) {
       const busqueda = correo || usuario;
       try {
-        const resUsuarios = await axios.get('http://192.168.100.3:3004/api/usuarios');
+        const resUsuarios = await axios.get('http://158.23.58.55:3004/api/usuarios');
         const usuarioEncontrado = resUsuarios.data.find(u =>
           (u.correo && u.correo.toLowerCase() === busqueda.toLowerCase()) ||
           (u.nombre && u.nombre.toLowerCase() === busqueda.toLowerCase()) ||
@@ -189,7 +189,7 @@ router.put('/api/citas/:id', async (req, res) => {
     // 3. Resolver ID del vehículo si no viene directo
     if ((!id_vehiculo || id_vehiculo === 'null') && placa) {
       try {
-        const resVehiculos = await axios.get('http://192.168.100.3:3005/api/vehiculos');
+        const resVehiculos = await axios.get('http://158.23.58.55:3005/api/vehiculos');
         const vehiculoEncontrado = resVehiculos.data.find(v =>
           v.placa && String(v.placa).trim().toUpperCase() === String(placa).trim().toUpperCase()
         );

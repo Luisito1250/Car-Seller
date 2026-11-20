@@ -15,7 +15,7 @@
       </ThreadGroup>
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Publicaciones" enabled="true">
-          <stringProp name="HTTPSampler.domain">192.168.100.3</stringProp>
+          <stringProp name="HTTPSampler.domain">158.23.58.55</stringProp>
           <stringProp name="HTTPSampler.port">3002</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/api/publicaciones</stringProp>

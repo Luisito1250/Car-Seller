@@ -8,7 +8,7 @@ document.getElementById('borrar-form').addEventListener('submit', async function
     if (!confirmar) return;
 
     try {
-        const respuesta = await fetch(`http://192.168.100.3:3005/api/vehiculos/${id}`, {
+        const respuesta = await fetch(`http://158.23.58.55:3005/api/vehiculos/${id}`, {
             method: 'DELETE'
         });
 

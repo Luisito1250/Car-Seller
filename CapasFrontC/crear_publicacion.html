@@ -107,7 +107,7 @@ btnCargar.addEventListener('click', async () => {
 
   try {
     // 1. Obtener datos del vehículo
-    const resVehiculo = await fetch('http://192.168.100.3:3005/api/vehiculos');
+    const resVehiculo = await fetch('http://158.23.58.55:3005/api/vehiculos');
     if (!resVehiculo.ok) throw new Error('Error al conectar con vehículos');
     const listaVehiculos = await resVehiculo.json();
 
@@ -122,7 +122,7 @@ btnCargar.addEventListener('click', async () => {
 
       // 2. Verificar si ya existe un anuncio en publicaciones
       try {
-        const resPubs = await fetch('http://192.168.100.3:3002/api/publicaciones');
+        const resPubs = await fetch('http://158.23.58.55:3002/api/publicaciones');
         if (resPubs.ok) {
           const listaPubs = await resPubs.json();
           const pubExistente = listaPubs.find(p =>
@@ -188,7 +188,7 @@ form.addEventListener('submit', async (e) => {
   // 1. Actualizar vehículo en el microservicio 3005
   if (idVehiculoEncontrado) {
     try {
-      await fetch(`http://192.168.100.3:3005/api/vehiculos/${idVehiculoEncontrado}`, {
+      await fetch(`http://158.23.58.55:3005/api/vehiculos/${idVehiculoEncontrado}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -218,8 +218,8 @@ form.addEventListener('submit', async (e) => {
   };
 
   const urlPublicacion = idPublicacionEncontrada
-    ? `http://192.168.100.3:3002/api/publicaciones/${idPublicacionEncontrada}`
-    : 'http://192.168.100.3:3002/api/publicaciones';
+    ? `http://158.23.58.55:3002/api/publicaciones/${idPublicacionEncontrada}`
+    : 'http://158.23.58.55:3002/api/publicaciones';
 
   const metodoPublicacion = idPublicacionEncontrada ? 'PUT' : 'POST';
 

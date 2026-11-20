@@ -42,7 +42,7 @@ document.getElementById('consulta-form').addEventListener('submit', async functi
     const resultado = document.getElementById('resultado');
 
     try {
-        const respuesta = await fetch(`http://192.168.100.3:3003/api/citas/${id}`);
+        const respuesta = await fetch(`http://158.23.58.55:3003/api/citas/${id}`);
 
         if (respuesta.status === 404) {
             resultado.innerHTML = `
