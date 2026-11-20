@@ -18,7 +18,26 @@
           <a href="ver_transaccion.html" class="btn btn-outline-primary">Ver Transacciones</a>
           <a href="insertar_transaccion.html" class="btn btn-outline-success">Insertar Transacción</a>
           <a href="consultar_transaccion.html" class="btn btn-outline-info">Consultar Transacción</a>
-          <a href="/capasFrontR/admin.html" class="btn btn-secondary">Volver al Portal Principal</a>
+          <button onclick="volverAlPortal()" class="btn btn-secondary">
+    ← Volver al Portal Principal
+</button>
+
+<script>
+function volverAlPortal() {
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const rol = usuario && usuario.rol ? String(usuario.rol).toLowerCase().trim() : "";
+
+    if (rol === "admin" || rol === "administrador") {
+        window.location.href = "/capasFrontR/admin.html";
+    } else if (rol === "vendedor") {
+        window.location.href = "/capasFrontR/vendedor.html";
+    } else if (rol === "cliente") {
+        window.location.href = "/capasFrontR/cliente.html";
+    } else {
+        window.location.href = "/index.html";
+    }
+}
+</script>
         </div>
       </div>
     </div>

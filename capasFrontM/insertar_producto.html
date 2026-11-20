@@ -37,7 +37,7 @@
 
         <!-- BOTÓN VOLVER AL INICIO QUE REDIRIGE A CapasFrontC -->
         <div class="text-center mt-2">
-            <a href="../capasFrontR/cliente.html" class="btn btn-secondary">Volver al inicio</a>
+            <a href="javascript:void(0)" onclick="const u=JSON.parse(localStorage.getItem('usuario'));const r=(u&&u.rol||'').toLowerCase().trim();location.href=(r==='admin'||r==='administrador')?'/capasFrontR/admin.html':(r==='vendedor'?'/capasFrontR/vendedor.html':'/capasFrontR/cliente.html')" class="btn btn-secondary">Volver al inicio</a>
         </div>
     </div>
 </div>

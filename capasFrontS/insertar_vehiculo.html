@@ -3,55 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Insertar Vehículo</title>
+  <title>Publicar Nuevo Vehículo</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-  <div class="container mt-5 mb-5">
-    <h2 class="text-center mb-4">Insertar Nuevo Vehículo</h2>
-    <form id="vehiculo-form">
-      <div class="mb-3">
-        <label for="placa" class="form-label">Placa</label>
-        <input type="text" class="form-control" id="placa" placeholder="Ej: ABC123" required />
-      </div>
-      <div class="mb-3">
-        <label for="tipo" class="form-label">Tipo</label>
-        <input type="text" class="form-control" id="tipo" placeholder="Ej: Camioneta, Sedán..." required />
-      </div>
-      <div class="mb-3">
-        <label for="marca" class="form-label">Marca</label>
-        <input type="text" class="form-control" id="marca" required />
-      </div>
-      <div class="mb-3">
-        <label for="modelo" class="form-label">Modelo</label>
-                <input type="text" class="form-control" id="modelo" required />
-      </div>
-      <div class="mb-3">
-        <label for="ano" class="form-label">Año</label>
-        <input type="number" class="form-control" id="ano" required />
-      </div>
-      <div class="mb-3">
-        <label for="precio" class="form-label">Precio</label>
-        <input type="number" class="form-control" id="precio" required />
-      </div>
-      <div class="mb-3">
-        <label for="kilometraje" class="form-label">Kilometraje</label>
-        <input type="number" class="form-control" id="kilometraje" required />
-      </div>
-      <div class="mb-3">
-        <label for="estado" class="form-label">Estado</label>
-        <input type="text" class="form-control" id="estado" placeholder="Ej: Disponible, Usado..." required />
-      </div>
-      <div class="mb-3">
-        <label for="imagen" class="form-label">URL de la Imagen del Vehículo</label>
-        <input type="url" class="form-control" id="imagen" placeholder="https://ejemplo.com/imagen.jpg" required />
-        <img id="preview" src="" alt="Vista previa" class="img-fluid mt-2 d-none rounded shadow-sm" style="max-height:200px;">
-      </div>
-      <button type="submit" class="btn btn-success">Guardar</button>
-      <a href="index.html" class="btn btn-secondary ms-2">Volver</a>
-    </form>
+<body class="bg-light">
+  <div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-end mb-2">
+      <span id="badgeSesion" class="badge bg-dark fs-6">Sesión: Invitado</span>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-4">
+        <h2 id="tituloFormulario" class="text-center fw-bold mb-4">Insertar Nuevo Vehículo</h2>
+        <form id="vehiculo-form">
+          <div class="mb-3">
+            <label for="placa" class="form-label">Placa</label>
+            <input type="text" class="form-control" id="placa" placeholder="Ej: ABC123" required />
+          </div>
+          <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo</label>
+            <input type="text" class="form-control" id="tipo" placeholder="Ej: Camioneta, Sedán..." required />
+          </div>
+          <div class="mb-3">
+            <label for="marca" class="form-label">Marca</label>
+            <input type="text" class="form-control" id="marca" required />
+          </div>
+          <div class="mb-3">
+            <label for="modelo" class="form-label">Modelo</label>
+            <input type="text" class="form-control" id="modelo" required />
+          </div>
+          <div class="mb-3">
+            <label for="ano" class="form-label">Año</label>
+            <input type="number" class="form-control" id="ano" required />
+          </div>
+          <div class="mb-3">
+            <label for="precio" class="form-label">Precio</label>
+            <input type="number" class="form-control" id="precio" required />
+          </div>
+          <div class="mb-3">
+            <label for="kilometraje" class="form-label">Kilometraje</label>
+            <input type="number" class="form-control" id="kilometraje" required />
+          </div>
+          <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <input type="text" class="form-control" id="estado" placeholder="Ej: Disponible, Usado..." required />
+          </div>
+          <div class="mb-3">
+            <label for="imagen" class="form-label">URL de la Imagen del Vehículo</label>
+            <input type="url" class="form-control" id="imagen" placeholder="https://ejemplo.com/imagen.jpg" required />
+            <img id="preview" src="" alt="Vista previa" class="img-fluid mt-2 d-none rounded shadow-sm" style="max-height:200px;">
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="button" onclick="volverSegunRol()" class="btn btn-secondary">Volver</button>
+          </div>
+        </form>
         <div id="mensaje" class="alert mt-4 d-none"></div>
+      </div>
+    </div>
   </div>
+
+  <script>
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const rol = usuario && usuario.rol ? String(usuario.rol).toLowerCase().trim() : "";
+
+    if (usuario) {
+      document.getElementById("badgeSesion").textContent =
+        `Sesión: ${usuario.nombre || usuario.correo} (${rol || "usuario"})`;
+    }
+
+    if (rol === "vendedor") {
+      document.getElementById("tituloFormulario").textContent = "Publicar Nuevo Vehículo";
+      document.getElementById("tituloFormulario").classList.add("text-success");
+    }
+
+    function volverSegunRol() {
+      if (rol === "vendedor") {
+        window.location.href = "/CapasFrontC/ver_publicaciones_vendedor.html";
+      } else if (rol === "admin" || rol === "administrador") {
+        window.location.href = "/capasFrontS/index.html";
+      } else {
+        window.location.href = "/index.html";
+      }
+    }
+  </script>
   <script src="insertar_vehiculo.js"></script>
 </body>
 </html>
