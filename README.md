@@ -25,7 +25,7 @@ La infraestructura está orquestada sobre **Docker Swarm** dentro de una máquin
 | **ms-publicaciones** | `3002` | Node.js (Express) | MySQL 8.0 (`consesionario`) | Publicaciones del concesionario |
 | **ms-citas** | `3003` | Node.js (Express) | MySQL 8.0 (`solicitudcita`) | Agendamiento de citas de taller/mantenimiento |
 | **ms-usuarios** | `3004` | Node.js (Express) | MySQL 8.0 (`usuarios`) | Gestión de cuentas de usuario y perfiles |
-| **ms-vehiculos** | `3005` | Node.js (Express) | MySQL 8.0 (`capasalmacen`) | Inventario y catálogo de vehículos |
+| **ms-vehiculos** | `3005` | Node.js (Express) | MySQL 8.0 (`capasalmacen`) | Inventario, catálogo y endpoint analítico Spark |
 
 ### Micro-frontends
 
@@ -36,11 +36,11 @@ La infraestructura está orquestada sobre **Docker Swarm** dentro de una máquin
 | **front-publicaciones** | `8002` | Interfaz gráfica de publicaciones |
 | **front-citas** | `8003` | Interfaz gráfica de citas |
 | **front-usuarios** | `8004` | Interfaz gráfica de usuarios |
-| **front-vehiculos** | `8005` | Interfaz gráfica de vehículos |
+| **front-vehiculos** | `8005` | Interfaz gráfica de vehículos y estadísticas Spark |
 
 ### Clúster de Procesamiento Distribuido (Apache Spark)
 
-Integra una capa analítica desplegada sobre la misma red `red-almacen` de Docker Swarm para procesar conjuntos de datos de vehículos en memoria y exportar métricas en formato JSON hacia el dashboard principal (`front-main`) mediante volúmenes compartidos.
+Integra una capa analítica desplegada sobre la misma red `red-almacen` de Docker Swarm para procesar conjuntos de datos de vehículos en memoria y exportar métricas en formato JSON hacia el dashboard mediante volúmenes compartidos.
 
 | Componente | Puerto / Red | Volumen Montado | Función |
 | :--- | :--- | :--- | :--- |
@@ -69,6 +69,55 @@ Integra una capa analítica desplegada sobre la misma red `red-almacen` de Docke
 ├── Vehiculos/                  # Código fuente ms-vehiculos (Node.js)
 ├── capasFront*/                # Código fuente de los micro-frontends
 └── spark_cluster/              # Capa de procesamiento distribuido con Apache Spark
-    ├── data/                   # Datasets CSV de entrada
+    ├── data/                   # Datasets CSV de entrada (train.csv)
     ├── jobs/                   # Scripts PySpark (analisis_autos.py)
-    └── reportes/               # Reportes JSON compartidos con front-main
+    └── reportes/               # Reportes JSON compartidos (reporte_dashboard.json)
+```
+
+---
+
+## Paso a Paso para Reproducir la Implementación
+
+### 1. Clonar o actualizar el repositorio
+En el nodo administrador (Ubuntu Server `192.168.100.3`):
+```bash
+git clone [https://github.com/Luisito1250/Car-Seller.git](https://github.com/Luisito1250/Car-Seller.git) Proyecto
+cd Proyecto
+git pull origin main
+```
+
+### 2. Inicializar Docker Swarm y desplegar la pila de servicios
+Si el clúster Swarm aún no está activo en la máquina virtual, inicialízalo y despliega los 19 servicios definidos en `docker-compose.yml`:
+```bash
+docker swarm init
+docker stack deploy -c docker-compose.yml proyecto_almacen
+```
+Verifica que todas las réplicas estén activas (`1/1` o `2/2`):
+```bash
+docker service ls
+```
+
+### 3. Ejecutar el procesamiento distribuido en Apache Spark
+Lanza el trabajo PySpark (`analisis_autos.py`) asignando `450 MB` por ejecutor para ajustarse al límite de memoria de los contenedores *Worker* y generar el reporte consolidado `reporte_dashboard.json`:
+```bash
+docker exec -it $(docker ps -q -f name=proyecto_almacen_spark-master) \
+  /opt/spark/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  --executor-memory 450m \
+  /opt/spark/jobs/analisis_autos.py
+```
+
+### 4. Escalar los nodos trabajadores de Spark (Pruebas de escalabilidad)
+Para reproducir las mediciones de rendimiento con `1`, `2` o `3` *Workers*:
+```bash
+docker service scale proyecto_almacen_spark-worker=1
+docker service scale proyecto_almacen_spark-worker=2
+docker service scale proyecto_almacen_spark-worker=3
+```
+
+### 5. Verificación de acceso y endpoints
+* **Aplicación Principal (HAProxy):** `http://192.168.100.3/`
+* **Estadísticas de HAProxy:** `http://192.168.100.3/stats`
+* **Dashboard Estadístico de Vehículos:** `http://192.168.100.3:8005/estadisticas_vehiculos.html`
+* **API REST Analítica (vía HAProxy):** `http://192.168.100.3/api/vehiculos/analytics`
+* **Spark Master Web UI:** `http://192.168.100.3:8081`
